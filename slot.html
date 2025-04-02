@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slot Machine</title>
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: #111;
+        color: #fff;
+        font-family: system-ui, sans-serif;
+        gap: 1rem;
+        padding: 1rem;
+      }
+
+      .slot-machine {
+        display: grid;
+        grid-template-columns: repeat(3, 80px);
+        grid-template-rows: repeat(3, 80px);
+        gap: 10px;
+        margin-bottom: 1rem;
+      }
+
+      .slot-cell {
+        background: #222;
+        border: 2px solid #444;
+        font-size: 2rem;
+        text-align: center;
+        line-height: 80px;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .controls {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .controls input[type="number"] {
+        padding: 0.25rem;
+        font-size: 1rem;
+        width: 80px;
+      }
+
+      .controls button {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        background: #fff;
+        color: #000;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .controls button:hover {
+        background: #eee;
+      }
+
+      .bet-label {
+        font-size: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="margin-top: 2rem;">
+      <button onclick="window.location.href='index.html'" style="padding: 0.5rem 1rem; font-size: 1rem; border: none; border-radius: 5px; background: #FF474C; color: #000; cursor: pointer;">
+        ← Back to Home
+      </button>
+    </div>
+    
+    <h1>🎰 Slot Machine</h1>
+    <p>Balance: $<span id="balance">100</span></p>
+
+    <div class="slot-machine" id="slot">
+      <!-- Filled dynamically -->
+    </div>
+
+    <div class="controls">
+      <label class="bet-label" for="bet">Bet amount ($1 - $10):</label>
+      <input type="number" id="bet" min="1" max="10" value="1" />
+      <button id="spin">Spin</button>
+      <p id="message"></p>
+    </div>
+
+    <audio id="win-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_79e2ed2796.mp3?filename=success-fanfare-trumpets-6185.mp3"></audio>
+
+    <script>
+      const symbols = ['🍒', '🔔', '🍋', '⭐', '7️⃣'];
+      const symbolValues = {
+        '7️⃣': 10,
+        '⭐': 6,
+        '🍒': 4,
+        '🔔': 3,
+        '🍋': 2
+      };
+
+      const rows = 3;
+      const cols = 3;
+      let balance = 100;
+
+      const slot = document.getElementById('slot');
+      const balanceDisplay = document.getElementById('balance');
+      const betInput = document.getElementById('bet');
+      const message = document.getElementById('message');
+      const winSound = document.getElementById('win-sound');
+
+      let currentResult = [];
+
+      function createEmptyGrid() {
+        slot.innerHTML = '';
+        const grid = [];
+
+        for (let r = 0; r < rows; r++) {
+          const row = [];
+          for (let c = 0; c < cols; c++) {
+            const cell = document.createElement('div');
+            cell.className = 'slot-cell';
+            slot.appendChild(cell);
+            row.push(cell);
+          }
+          grid.push(row);
+        }
+
+        return grid;
+      }
+
+      async function spinReels(grid) {
+        const result = Array.from({ length: rows }, () => Array(cols).fill(''));
+
+        for (let c = 0; c < cols; c++) {
+          await new Promise(resolve => setTimeout(resolve, 300));
+          for (let r = 0; r < rows; r++) {
+            const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+            grid[r][c].textContent = symbol;
+            grid[r][c].style.transform = 'translateY(-20px)';
+            setTimeout(() => {
+              grid[r][c].style.transform = 'translateY(0)';
+            }, 100);
+            result[r][c] = symbol;
+          }
+        }
+
+        return result;
+      }
+
+      function checkPaylines(result, bet) {
+        let winnings = 0;
+        const paylines = [
+          [ [0,0], [0,1], [0,2] ],
+          [ [1,0], [1,1], [1,2] ],
+          [ [2,0], [2,1], [2,2] ],
+          [ [0,0], [1,1], [2,2] ],
+          [ [0,2], [1,1], [2,0] ]
+        ];
+
+        for (const line of paylines) {
+          const [a, b, c] = line;
+          const symA = result[a[0]][a[1]];
+          const symB = result[b[0]][b[1]];
+          const symC = result[c[0]][c[1]];
+          if (symA === symB && symB === symC) {
+            winnings += bet * symbolValues[symA];
+          }
+        }
+
+        return winnings;
+      }
+
+      document.getElementById('spin').addEventListener('click', async () => {
+        const bet = parseInt(betInput.value);
+        if (bet < 1 || bet > 10) {
+          message.textContent = 'Bet must be between $1 and $10.';
+          return;
+        }
+
+        if (balance < bet) {
+          message.textContent = 'Insufficient balance!';
+          return;
+        }
+
+        balance -= bet;
+        const grid = createEmptyGrid();
+        const result = await spinReels(grid);
+        currentResult = result;
+
+        const winnings = checkPaylines(result, bet);
+        balance += winnings;
+
+        balanceDisplay.textContent = balance;
+        if (winnings > 0) {
+          winSound.currentTime = 0;
+          winSound.play();
+          message.textContent = `You won $${winnings}! 🎉`;
+        } else {
+          message.textContent = 'Try again!';
+        }
+      });
+
+      window.addEventListener('DOMContentLoaded', async () => {
+        const grid = createEmptyGrid();
+        currentResult = await spinReels(grid);
+      });
+    </script>
+  </body>
+</html>
