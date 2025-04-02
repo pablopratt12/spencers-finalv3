@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact - Spencer's Final</title>
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+      body {
+        background: linear-gradient(-45deg, #0c0c0c, #1a1a1a, #2c2c2c, #111);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        font-family: system-ui, sans-serif;
+        text-align: center;
+        padding: 2rem;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .social-links a {
+        color: #fff;
+        font-size: 1.5rem;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .social-links a:hover {
+        color: #6dd5ed;
+      }
+
+      @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Get in Touch</h1>
+    <p>Follow me or reach out on any of these platforms:</p>
+
+    <div class="social-links">
+      <a href="https://github.com/pablopratt12" target="_blank">GitHub</a>
+      <a href="https://www.instagram.com/pablopratt/" target="_blank">Instagram</a>
+      <a href="https://www.linkedin.com/in/spencer-pratt-27b471305" target="_blank">LinkedIn</a>
+      <a href="spratt5818@gmail.com">Email</a>
+      <div style="margin-top: 2rem;">
+        <button onclick="window.location.href='index.html'" style="padding: 0.5rem 1rem; font-size: 1rem; border: none; border-radius: 5px; background: #FF474C; color: #000; cursor: pointer;">
+          ← Back to Home
+        </button>
+      </div>
+      
+    </div>
+  </body>
+</html>
