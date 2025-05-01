@@ -1,6 +1,4 @@
-/* style.css */
 
-/* Reset + Base Styles */
 * {
   margin: 0;
   padding: 0;
@@ -14,7 +12,7 @@ body, html {
   overflow-x: hidden;
 }
 
-/* Animated Gradient Background */
+
 .background {
   position: fixed;
   width: 100%;
@@ -31,7 +29,7 @@ body, html {
   100% { background-position: 0% 50%; }
 }
 
-/* Hero Section */
+
 .hero {
   text-align: center;
   padding: 5rem 1rem;
@@ -65,7 +63,7 @@ body, html {
   background-color: #ffffff;
 }
 
-/* Sidebar */
+
 .sidebar {
   position: fixed;
   top: 0;
@@ -107,7 +105,7 @@ body, html {
   transform: translateX(0);
 }
 
-/* Toggle Button */
+
 .sidebar-toggle {
   position: fixed;
   top: 1rem;
@@ -120,7 +118,7 @@ body, html {
   z-index: 1000;
 }
 
-/* Responsive */
+
 @media (max-width: 600px) {
   .hero h1 {
     font-size: 2rem;
