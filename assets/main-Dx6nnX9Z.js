@@ -1,0 +1,1 @@
+import"./modulepreload-polyfill-B5Qt9EMX.js";document.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("sidebar"),t=document.getElementById("toggleSidebar"),d=document.getElementById("closeSidebar");t.addEventListener("click",()=>{e.classList.add("show")}),d.addEventListener("click",()=>{e.classList.remove("show")})});
